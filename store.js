@@ -8,10 +8,32 @@ const initialState = {
   lastUpdate: 0,
   light: false,
   count: 0,
+  cart: [],
+}
+
+const groupBy = (arr) => {
+    return arr.reduce((result, current) => {
+      const element = result.find((p) => p.variantId === current.variantId);
+      if (element) {
+        element.quantity += current.quantity; 
+      } else {
+        result.push({
+          ...current,
+          variantId: current.variantId,
+          quantity: current.quantity,
+        });
+      }
+      return result;
+    }, []);
 }
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case 'ADD_CART':
+      return {
+        ...state,
+        cart: groupBy([...state.cart, action.payload])
+      }
     case 'TICK':
       return {
         ...state,
